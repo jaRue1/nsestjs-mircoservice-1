@@ -2,7 +2,7 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
  @Entity()
- export class Product {
+ export class Product { // this is the MYSQL table Product definition
   @PrimaryGeneratedColumn() // PK
   id: number;
 
