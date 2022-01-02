@@ -11,24 +11,31 @@ export class ProductController {
 
   // Create a product 
   @Post()
-  create(
+   async create(
     @Body( 'title') title: string,
     @Body('image') image: string
   )
-  {
-    return this.productService.create({title,image});
+  { 
+    const product =  await this.productService.create({title,image});
+
+    this.client.emit('product_created',product) // sending the product_created to rabbitMQ
+
+    return product;
   }
   
   // Read || get all the products
   @Get() // decorator which describes the behavior of the function
-  all(){
+  async all(){
+
       this.client.emit('hello','hello from rabbitMQ') // how we send messages to rabbitMQ
+
       return this.productService.all();
   }
 
   // Get product by id
   @Get(':id')
   async get(@Param ('id') id:number){
+
     return this.productService.get(id);
   }
 
@@ -39,13 +46,35 @@ export class ProductController {
     @Body( 'title') title: string,
     @Body('image') image: string)
     {
-    return this.productService.update(id, {title,image});
+      await this.productService.update(id, {title,image});
+
+      const product = await this.productService.get(id);
+
+      this.client.emit('product_updated',product)// sending the product_updated to rabbitMQ
+
+    return product
   }
 
   // Delete by id 
   @Delete(':id')
   async delete(@Param ('id') id:number ){
-    return this.productService.delete(id);
+    
+    await this.productService.delete(id);
+
+    this.client.emit('product_deleted',id) // sending the product_deleted to rabbitMQ
   }
+
+  @Post(':id/like')
+  async like(@Param ('id') id: number){
+    const product = await this.productService.get(id);
+
+    return this.productService.update(id,{
+
+      likes: product.likes + 1
+
+    })
+
+  }
+  
 }
  
