@@ -15,6 +15,7 @@ import { AppService } from './app.service';
         username: 'nest_js',
         password: 'Password@123',
         database: 'NESTDB',
+        // entities: [""], need to figure this out
         autoLoadEntities: true, // only for development env do not apply this setting to prod
         synchronize: true,
       }),

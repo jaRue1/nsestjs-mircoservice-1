@@ -12,7 +12,7 @@ export class ProductController {
   // Create a product 
   @Post()
    async create(
-    @Body( 'title') title: string,
+    @Body('title') title: string,
     @Body('image') image: string
   )
   { 
